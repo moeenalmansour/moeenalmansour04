@@ -1,17 +1,32 @@
-AI381 Lab 1 · Pain log
-Name:                Student ID:            Date:
+cat << 'EOF' > pain_log.txt
+==================================================
+AI381 - Lab 1: The Manual Pipeline Race (Pain Log)
+==================================================
 
-Start the stopwatch before you open the notebook. One line per step.
+1. TIME SPENT PER STEP (Minutes)
+--------------------------------------------------
+- Round 1 (Train v1, start API, 3 curl predictions): 15 mins
+- Twist 1 (Switch to churn_v2.csv, fix column error, redeploy): 20 mins
+- Twist 2 (Rebuild in a fresh environment from notes): 25 mins
+- Twist 3 (Investigate currently served model version): 10 mins
+- Total Time: 70 mins
 
-Step               | Minutes | What failed or slowed me down        | Question I could not answer
--------------------|---------|---------------------------------------|----------------------------
-Round 1 (train)    |         |                                       |
-Round 1 (serve)    |         |                                       |
-Round 1 (3 x curl) |         |                                       |
-Twist 1 (v2 data)  |         |                                       |
-Twist 2 (fresh env)|         |                                       |
-Twist 3 (version?) |         |                                       |
--------------------|---------|---------------------------------------|----------------------------
-Total              |         | Number of failures:                   |
+2. FAILURES & ERRORS ENCOUNTERED
+--------------------------------------------------
+- [Twist 1 - Data Schema Change]: Switching from churn_v1.csv to churn_v2.csv caused a KeyError because a column name was changed in the new dataset. Had to manually inspect the CSV headers and update the feature names in the code.
+- [Twist 2 - Incomplete Dependencies]: Rebuilding in a fresh virtual environment failed initially because requirements.txt was missing essential packages (such as scikit-learn, pandas, and joblib). Had to install them manually one by one based on runtime errors.
+- [Twist 3 - Model Overwriting]: Saving the retrained model overwrote the existing 'model.joblib' file with no warning, backup, or version tag.
 
-The one thing I would automate first, and why:
+3. UNANSWERED QUESTIONS
+--------------------------------------------------
+- Which exact dataset version (churn_v1.csv or churn_v2.csv) was used to train the active 'model.joblib' currently running on the server?
+- What were the exact library versions used when the baseline model was first created?
+- How can we roll back to the v1 model if v2 performs poorly in production?
+
+4. WHAT TO AUTOMATE FIRST (Reflection Summary)
+--------------------------------------------------
+- Data Schema Validation: Automatically check column names before training so schema changes fail fast with clear alerts.
+- Environment & Dependency Management: Lock exact package versions (e.g., pip freeze) and use containers to guarantee reproducibility.
+- Model Versioning & Registry: Automatically tag saved models with version numbers, timestamps, and metadata instead of overwriting 'model.joblib'.
+==================================================
+EOF
